@@ -1,4 +1,6 @@
-# ERC20(Fungible Token)
+# ERC20(Fungible)
+
+## "@openzeppelin/contracts/token/ERC20/ERC20.sol"
 - 대체 가능한(Fungible) 토큰: 어떤 하나의 토큰은 다른 어떤 토큰과도 완전히 동일
 - IERC20 인터페이스를 구현
     - 조회(View Function)
@@ -26,3 +28,37 @@
     - ERC20Pausable: 해킹 등 비상시에 토큰 이동을 전체 정지시키는 기능
     - ERC20Capped: 발행량의 최대 한도(Cap)를 설정하는 기능
     - ERC20Permit: 가스비 없이 서명(Signature)만으로 approve를 하는 기능
+
+
+
+
+# ERC721(Non Fungible)
+
+## NFT
+- 그림을 블록체인에 저장할 수 있을까? --> 불가능(막대한 가스비)
+- 블록체인에는 Link만 남겨두고, 실제 그림과 설명은 Off-Chain에 저장(그림설명서: Metadata, 저장소: IPFS)
+
+- Metadata(그림 설명서)
+    - 그림에 대한 정보를 담은 텍스트파일(JSON)
+    - OpenSea같은 마켓플레이스는 블록체인에 있는 그림을 보여주는 게 아니라, 이 Metadata(JSON)를 읽은 후 그림을 화면에 제공
+    - NFT 토큰 하나는 Metadata(JSON) 파일의 위치(URI)만 알고 있음
+- IPFS(InterPlanetary File System - 저장소)
+    - Metadata(JSON)가 실제 저장된 저장소
+    - HTTP는 위치(Location)기반이지만 IPFS는 내용(Content)기반으로 데이터를 찾음
+    - 파일 내용이 점 하나라도 바뀌면 주소가 바뀜(주소가 같다면 내용은 절대 변하지 않았음을 보장)
+    - 파일의 내용을 SHA-256으로 돌련 결과가 주소가 됨
+    - CID (Content Identifier)
+        - Multibase: 이 문자열이 base58로 인코딩됐는지, base32로 인코딩됐는지 알려주는 접두사.
+        - Multicodec: 데이터가 어떤 형식인지(예: raw binary, Merkle DAG protobuf 등) 알려주는 식별자
+        - Multihash: 실제 데이터의 해시값
+
+- 전체 연결 구조
+    1. 스마트 컨트랙트(BlockChain)
+        - Token ID: 1
+        - Token URI: ipfs://QmMetadataHash(메타데이터가 있는 주소)
+    2. Metadata(IPFS - JSON)
+        - "name": "ABC"
+        - "image": "ipfs://QmImageHash" (이미지가 있는 주소)
+        - 그림의 실제 데이터를 보유
+    3. 이미지 파일(PNG/JPG)
+        - 실제 그림
