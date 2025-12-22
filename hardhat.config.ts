@@ -11,23 +11,14 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 const config: HardhatUserConfig = {
     solidity: "0.8.28",
     networks: {
-        sepolia: {
-        url: SEPOLIA_RPC_URL,
-        accounts: [PRIVATE_KEY],
+            sepolia: {
+            url: SEPOLIA_RPC_URL,
+            chainId: 11155111,
+            accounts: PRIVATE_KEY !== "" ? [PRIVATE_KEY] : [],
         },
     },
     etherscan: {
         apiKey: ETHERSCAN_API_KEY,
-        customChains: [
-            {
-              network: "sepolia",
-              chainId: 11155111,
-              urls: {
-                apiURL: "https://api-sepolia.etherscan.io/api", // API 엔드포인트 명시
-                browserURL: "https://sepolia.etherscan.io",
-              },
-            },
-        ],
     },
 };
 

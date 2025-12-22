@@ -104,3 +104,23 @@
     - _burn(uint256 tokenId): NFT를 삭제(_update(address(0), tokenId, address(0))를 호출)
     - _checkAuthorized(address owner, address spender, uint256 tokenId): spender가 이 토큰을 움직일 자격이 있는지 엄격하게 검사
     - _safeMint(address to, uint256 tokenId, bytes memory data): "받는 사람이 받을 능력이 있는지" 확인 후 _mint(to, tokenId) 호출
+
+# EIP712(블록체인 서명 기술)
+- 사용자가 "내가 지금 무엇에 서명하는지" 눈으로 보고 확인할 수 있게 해주는 표준
+    - Ex) Message: 0x48656c6c6f20576f726c64 --> To: Alice Amount: 100 ETH Item: "Golden Sword" Deadline: 2025-12-31
+- 데이터의 구조(Structure)와 내용(Content)을 분리해서 해싱
+- 3단계 구조
+    1. TypeHash(데이터 구조 정의)
+        - 데이터의 스키마(Schema)를 해싱
+        - keccak256("Voucher(address buyer,uint256 tokenId)")
+            - "Voucher(address buyer,uint256 tokenId)"라는 구조를 가짐
+        - 데이터 필드 순서가 바뀌거나 타입이 바뀌면 서명이 깨짐
+    2. StructHash = hashStruct(message) (실제 값)
+        - TypeHash + Data를 섞어서 해싱
+        - keccak256(abi.encode(TypeHash, buyer, tokenId))
+            - 실제 데이터: "byer: 0xUser, tokenId: 1"(동적 타입(string, bytes)은 값 자체가 아니라 keccak256(값)을 인코딩)
+    3. Domain Separator(영역 구분자)
+        - Context 정보들을 섞어서 해싱
+        - 이 서명은 이더리움 메인넷(ID:1)의 이 컨트랙트(0xABC...)에서만 유효(다른 체인이나 다른 컨트랙트에서 재사용 공격(Replay Attack) 방지)
+        - keccak256(abi.encode(TypeHash, NameHash, VersionHash, ChainId, VerifyingContract))
+- Digest(최종 서명에 들어가는 해시값): keccack256("\x19\x01"||DomainSeparator||hashStruct(Message))
