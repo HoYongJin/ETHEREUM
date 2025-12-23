@@ -1,7 +1,23 @@
 # 관리자 권한(Access Control)
 
+## Pausable
+* 비상 상황에서 스마트 컨트랙트의 특정 기능을 중지(`Pause`)하거나 다시 재개(`Unpause`)할 수 있는 비상 정지 메커니즘(`Emergency Stop Mechanism`)을 제공
+* State Variables
+    - private `_paused`: 컨트랙트의 현재 정지 상태를 저장
+* Events
+    - Paused(address account): 재개 동작이 발생했을 때 블록체인 로그에 기록을 남김
+    - Unpaused(address account): 정지 동작이 발생했을 때 블록체인 로그에 기록을 남김
+* Modifiers
+    - whenNotPaused: 정지되지 않은 상태(`Normal State`)일 때만 함수 실행을 허용
+    - whenPaused: 정지된 상태(`Paused State`)일 때만 함수 실행을 허용
+* State-Changing Functions
+    - _pause(): 시스템을 정지 상태(`_paused = true`)로 변경
+        - `whenNotPaused` 상태일때만 호출 가능
+    - _unpause(): 시스템을 다시 정상 상태(`_paused = false`)로 변경
+        - `whenPaused` 상태일때만 호출 가능
+
 ## Ownable
-* 오직 소유자(Owner)만이 특정 함수를 실행할 수 있게 제한
+* 오직 소유자(`Owner`)만이 특정 함수를 실행할 수 있게 제한
 * `abstract contract`로 구현되어 상속(`is Ownable`)을 통해 사용
 * State & Custom Errors
     - `private _owner`: 소유자의 주소를 저장
