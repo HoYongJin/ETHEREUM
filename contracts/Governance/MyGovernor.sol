@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.so
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-// The Token (Voting Power)
+// The Token(Voting Power)
 contract MyToken is ERC20Votes, ERC20Permit {
     constructor() ERC20("MyToken", "MTK") ERC20Permit("MyToken") {
         _mint(msg.sender, 10_000 ether); // Mint 10,000 tokens to deployer
@@ -50,7 +50,7 @@ contract MyGovernor is
 {
     constructor(IVotes _token, TimelockController _timelock)
         Governor("MyDAO")
-        GovernorSettings(1 days, 1 weeks, 0)
+        GovernorSettings(1 days, 1 weeks, 1_000 ether)
         GovernorVotes(_token)
         GovernorTimelockControl(_timelock)
     {}
